@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -9,7 +11,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Watch JP',
       home: HomeScreen(),
     );
   }
@@ -38,6 +40,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _navigateToDetails(int index) {
+    //หน้า Details
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -50,7 +53,6 @@ class _HomeScreenState extends State<HomeScreen> {
             newPrice,
             newBranding,
           ) =>
-              //อย่าลืมใส่ใน 2 วงเล็บnewimageUrl
               _modifyProduct(index, newName, newDetails, newPrice, newBranding),
         ),
       ),
@@ -76,34 +78,39 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
+        onPressed: () async {
+          // 1. Image selection (using image_picker)
+          final imageFile =
+              await ImagePicker().pickImage(source: ImageSource.gallery);
+          if (imageFile == null) return; // User canceled or error
+
+          // 2. Create Text editing controllers
+          final nameController = TextEditingController();
+          final brandingController = TextEditingController();
+          final detailsController = TextEditingController();
+          final priceController = TextEditingController();
+
+          // 3. Show the add product dialog with image preview
           showDialog(
             context: context,
             builder: (BuildContext context) {
-              TextEditingController nameController = TextEditingController();
-              TextEditingController imageUrlController =
-                  TextEditingController();
-              TextEditingController brandingController =
-                  TextEditingController();
-              TextEditingController detailsController = TextEditingController();
-              TextEditingController priceController = TextEditingController();
-
               return AlertDialog(
                 title: Text("Add Product"),
                 content: SingleChildScrollView(
                   child: Column(
                     children: [
+                      // 4. Display the selected image (if any)
+                      imageFile != null
+                          ? Image.file(File(imageFile.path))
+                          : Container(
+                              height: 100, child: Text('No image selected')),
                       TextField(
                         controller: nameController,
                         decoration: InputDecoration(labelText: "Name"),
                       ),
                       TextField(
-                        controller: imageUrlController,
-                        decoration: InputDecoration(labelText: "Image URL"),
-                      ),
-                      TextField(
                         controller: brandingController,
-                        decoration: InputDecoration(labelText: "branding"),
+                        decoration: InputDecoration(labelText: "Branding"),
                       ),
                       TextField(
                         controller: detailsController,
@@ -112,25 +119,25 @@ class _HomeScreenState extends State<HomeScreen> {
                       TextField(
                         controller: priceController,
                         decoration: InputDecoration(labelText: "Price"),
+                        keyboardType:
+                            TextInputType.number, // For better price input
                       ),
                     ],
                   ),
                 ),
                 actions: [
                   TextButton(
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
+                    onPressed: () => Navigator.of(context).pop(),
                     child: Text("Cancel"),
                   ),
                   TextButton(
                     onPressed: () {
                       addNewProduct(
                         nameController.text,
-                        imageUrlController.text,
                         detailsController.text,
                         priceController.text,
                         brandingController.text,
+                        imageFile?.path, // Pass image path if selected
                       );
                       Navigator.of(context).pop();
                     },
@@ -147,49 +154,40 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildProductCard(int index) {
-    final String imageUrl = products[index]['imageUrl']!;
-    final String branding = products[index]['branding']!;
+  final String branding = products[index]['branding']!;
+  final String? imagePath = products[index]['imagePath']; // Access image path from product data
 
-    return GestureDetector(
-      onTap: () => _navigateToDetails(index),
-      child: MouseRegion(
-        onEnter: (_) => _setHoverIndex(index),
-        onExit: (_) => _clearHoverIndex(),
-        child: Card(
-          color: _hoverIndex == index ? Colors.blue[100] : null,
-          child: Column(
-            children: [
-              Image.network(
-                imageUrl,
-                fit: BoxFit.cover,
-                width: double.infinity,
-                height: 200,
-              ),
-              SizedBox(height: 8),
-              Text(
-                products[index]['name'],
-                textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 12),
-              ),
-              SizedBox(height: 8),
-              Text(
-                branding,
-                textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 12),
-              ),
-            ],
-          ),
+  return GestureDetector(
+    onTap: () => _navigateToDetails(index),
+    child: MouseRegion(
+      onEnter: (_) => _setHoverIndex(index),
+      onExit: (_) => _clearHoverIndex(),
+      child: Card(
+        color: _hoverIndex == index ? Colors.blue[100] : null,
+        child: Column(
+          children: [
+            // Display image if available
+            imagePath != null
+              ? Image.file(File(imagePath))
+              : SizedBox(height: 8), // Add a placeholder if no image
+            SizedBox(height: 8),
+            Text(
+              products[index]['name'],
+              textAlign: TextAlign.center,
+            ),
+          ],
         ),
       ),
-    );
-  }
+    ),
+  );
+}
 
-  void addNewProduct(String name, String imageUrl, String details, String price,
-      String branding) {
+
+  void addNewProduct(
+      String name, String details, String price, String branding, String? path) {
     setState(() {
       products.add({
         "id": "product_${products.length + 1}",
-        "imageUrl": imageUrl,
         "branding": branding,
         "name": name,
         "details": details,
@@ -206,13 +204,11 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void _modifyProduct(int index, String newName, String newDetails,
       String newPrice, String newBranding) {
-    //อย่าลืมใส่ในวงเล็บ,String newimageUrl
     setState(() {
       products[index]['name'] = newName;
       products[index]['details'] = newDetails;
       products[index]['price'] = newPrice;
       products[index]['branding'] = newBranding;
-      // products[index]['imageUrl'] = newimageUrl;
     });
   }
 }
@@ -226,7 +222,6 @@ class DetailsScreen extends StatelessWidget {
     String,
     String,
   ) onModify;
-//อย่าลืมเติมก่อนรับขอสิทธิ์รับรูป String
   const DetailsScreen({
     Key? key,
     required this.product,
@@ -238,7 +233,6 @@ class DetailsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     TextEditingController nameController =
         TextEditingController(text: product['name']);
-    // TextEditingController imageUrlController = TextEditingController(text: product['imageUrl']);
     TextEditingController detailsController =
         TextEditingController(text: product['details']);
     TextEditingController priceController =
@@ -310,10 +304,6 @@ class DetailsScreen extends StatelessWidget {
                           controller: priceController,
                           decoration: InputDecoration(labelText: "Price"),
                         ),
-                        // TextField(
-                        //   controller: imageUrlController,
-                        //  decoration: InputDecoration(labelText: "ImageUrl"),
-                        // ),
                       ],
                     ),
                     actions: [
@@ -327,7 +317,6 @@ class DetailsScreen extends StatelessWidget {
                         onPressed: () {
                           onModify(
                             nameController.text,
-                            // imageUrlController.text,
                             detailsController.text,
                             priceController.text,
                             brandingController.text,
