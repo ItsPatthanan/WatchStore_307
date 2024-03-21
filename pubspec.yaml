@@ -7,9 +7,13 @@ environment:
   sdk: '>=3.3.0 <4.0.0'
 
 dependencies:
+  animate_do: ^3.3.4
+  animations: ^2.0.11
   flutter:
     sdk: flutter
+  image_cropper: ^5.0.1
   image_picker: ^1.0.7
+  loading_animation_widget: ^1.2.1
 
 dev_dependencies:
   flutter_test:
