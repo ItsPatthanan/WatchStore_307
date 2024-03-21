@@ -1,4 +1,3 @@
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:animate_do/animate_do.dart';
 import 'package:animations/animations.dart';
@@ -7,11 +6,17 @@ void main() {
   runApp(MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Project',
+      title: 'Watch Detail-JP',
+      debugShowCheckedModeBanner: false,
       home: HomeScreen(),
     );
   }
@@ -23,6 +28,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  final TextEditingController _searchController = TextEditingController();
   final List<Map<String, dynamic>> products = [
     {
       "id": "product_1",
@@ -31,7 +37,7 @@ class _HomeScreenState extends State<HomeScreen> {
       "details": "Bright blue, 41 mm.,Oystersteel",
       "price": "390600",
       "imageUrl":
-          "https://cdn.shopify.com/s/files/1/2044/1529/products/Rolex_Datejust41_Diamond_Blue_Dial_UK6_1800x1800.jpg?v=1609614954"
+          "https://www.srichaiwatch.com/wp-content/uploads/2023/04/m126334-0027_collection_upright_landscape.webp"
     },
     {
       "id": "product_2",
@@ -40,9 +46,19 @@ class _HomeScreenState extends State<HomeScreen> {
       "details": "Omega Globemaster,39 mm Blue Dial 2017",
       "price": "262000",
       "imageUrl":
-          "https://tse2.mm.bing.net/th?id=OIP.qxHHUGphZB0gRVWXflWu7QHaHa&pid=Api&P=0&h=180"},
+          "https://tse2.mm.bing.net/th?id=OIP.qxHHUGphZB0gRVWXflWu7QHaHa&pid=Api&P=0&h=180"
+    },
+    {
+      "id": "product_3",
+      "name": "Descent Mk3i – 51 mm",
+      "branding": "Garmin",
+      "details": "Carbon Gray DLC Titanium with Black Silicone Band",
+      "price": "57990",
+      "imageUrl":
+          "https://www.garmin.com.tr/images/thumbs/0008177_descent-mk3i-51-mm-karbon-gri-dlc-titanyum-siyah-silikon-kayisli.webp"
+    },
   ];
-final TextEditingController _searchController = TextEditingController();
+
   int? _hoverIndex;
 
   void _setHoverIndex(int index) {
@@ -90,7 +106,7 @@ final TextEditingController _searchController = TextEditingController();
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Watch Store',
+          'Watch detail',
           style: TextStyle(color: Colors.white),
         ),
         backgroundColor: Colors.indigo,
@@ -131,12 +147,9 @@ final TextEditingController _searchController = TextEditingController();
               context: context,
               builder: (BuildContext context) {
                 TextEditingController nameController = TextEditingController();
-                TextEditingController imageUrlController =
-                    TextEditingController();
-                TextEditingController brandingController =
-                    TextEditingController();
-                TextEditingController detailsController =
-                    TextEditingController();
+                TextEditingController imageUrlController = TextEditingController();
+                TextEditingController brandingController = TextEditingController();
+                TextEditingController detailsController = TextEditingController();
                 TextEditingController priceController = TextEditingController();
 
                 return AlertDialog(
@@ -177,6 +190,7 @@ final TextEditingController _searchController = TextEditingController();
                       ],
                     ),
                   ),
+
                   actions: [
                     TextButton(
                       onPressed: () {
