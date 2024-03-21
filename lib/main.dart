@@ -1,5 +1,7 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:animate_do/animate_do.dart';
+import 'package:animations/animations.dart';
 import 'detailspage.dart';
 void main() {
   runApp(MyApp());
@@ -40,7 +42,7 @@ class _HomeScreenState extends State<HomeScreen> {
       "imageUrl":
           "https://tse2.mm.bing.net/th?id=OIP.qxHHUGphZB0gRVWXflWu7QHaHa&pid=Api&P=0&h=180"},
   ];
-
+final TextEditingController _searchController = TextEditingController();
   int? _hoverIndex;
 
   void _setHoverIndex(int index) {
@@ -56,22 +58,35 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _navigateToDetails(int index) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => DetailsScreen(
-          product: products[index],
-          onDelete: () => _deleteProduct(index),
-          onModify: (newName, newDetails, newPrice, newBranding, newImageUrl) =>
-              _modifyProduct(index, newName, newDetails, newPrice, newBranding,
-                  newImageUrl),
-        ),
+  Navigator.push(
+    context,
+    PageRouteBuilder(
+      transitionDuration: Duration(milliseconds: 500),
+      pageBuilder: (context, animation, secondaryAnimation) => DetailsScreen(
+        product: products[index],
+        onDelete: () => _deleteProduct(index),
+        onModify: (newName, newDetails, newPrice, newBranding, newImageUrl) =>
+            _modifyProduct(index, newName, newDetails, newPrice, newBranding, newImageUrl),
       ),
-    );
-  }
+      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+        return FadeThroughTransition(
+          animation: animation,
+          secondaryAnimation: secondaryAnimation,
+          child: child,
+        );
+      },
+    ),
+  );
+}
+
 
   @override
   Widget build(BuildContext context) {
+    List<Map<String, dynamic>> filteredProducts = products.where((product) {
+      final String searchText = _searchController.text.toLowerCase();
+      return product['name'].toLowerCase().contains(searchText) ||
+          product['branding'].toLowerCase().contains(searchText);
+    }).toList();
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -80,14 +95,35 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         backgroundColor: Colors.indigo,
       ),
-      body: GridView.extent(
-        maxCrossAxisExtent: 200,
-        childAspectRatio: 0.45,
-        children: List.generate(
-          products.length,
-          (index) => _buildProductCard(index),
-        ),
+  
+     body: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: TextField(
+              controller: _searchController,
+              decoration: InputDecoration(
+                labelText: 'Search',
+                prefixIcon: Icon(Icons.search),
+              ),
+              onChanged: (value) {
+                setState(() {});
+              },
+            ),
+          ),
+          Expanded(
+            child: GridView.extent(
+              maxCrossAxisExtent: 200,
+              childAspectRatio: 0.45,
+              children: List.generate(
+                filteredProducts.length,
+                (index) => _buildProductCard(index, filteredProducts),
+              ),
+            ),
+          ),
+        ],
       ),
+      
       floatingActionButton: FadeInUp(
         child: FloatingActionButton(
           onPressed: () {
@@ -173,7 +209,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildProductCard(int index) {
+  Widget _buildProductCard(int index, List<Map<String, dynamic>> filteredProducts) {
     final String imageUrl = products[index]['imageUrl']!;
     final String branding = products[index]['branding']!;
 

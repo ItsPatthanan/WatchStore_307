@@ -42,8 +42,8 @@ class DetailsScreen extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Container(
-                  width: 300,
-                  height: 300,
+                  width: 500,
+                  height: 600,
                   decoration: BoxDecoration(
                     color: Colors.white,
                     border: Border.all(color: Colors.grey),
@@ -71,16 +71,22 @@ class DetailsScreen extends StatelessWidget {
                     ), 
                   ],
                 ),
-                  child: Row(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
+                      SizedBox(width: 20),
                       Expanded(
                         flex: 1,
                         child: product['imageUrl'] != null
                             ? ClipRRect(
                                 borderRadius: BorderRadius.only(
-                                  topLeft: Radius.circular(20),
-                                  bottomLeft: Radius.circular(20),
+                                  topLeft: Radius.circular(20.0),
+                                topRight: Radius.circular(20.0),
+                                bottomLeft: Radius.circular(20.0),
+                                bottomRight: Radius.circular(20.0),
                                 ),
+                                
                                 child: Image.network(
                                   product['imageUrl'],
                                   fit: BoxFit.cover,
