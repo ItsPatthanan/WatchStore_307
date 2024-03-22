@@ -67,58 +67,62 @@ class DetailsScreen extends StatelessWidget {
                         ),
                       ],
                     ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        SizedBox(width: 20),
-                        Expanded(
-                          flex: 1,
-                          child: product['imageUrl'] != null
-                              ? ClipRRect(
-                                  borderRadius: BorderRadius.circular(20.0),
-                                  child: Image.network(
-                                    product['imageUrl'],
-                                    fit: BoxFit.cover,
-                                  ),
-                                )
-                              : Container(),
-                        ),
-                        Expanded(
-                          flex: 2,
-                          child: Container(
-                            padding: EdgeInsets.all(20),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                if (product['name'] != null)
-                                  Text(
-                                    'Name: ${product['name']}',
-                                    style: TextStyle(fontSize: 18),
-                                  ),
-                                SizedBox(height: 10),
-                                if (product['branding'] != null)
-                                  Text(
-                                    'Brand: ${product['branding']}',
-                                    style: TextStyle(fontSize: 18),
-                                  ),
-                                SizedBox(height: 10),
-                                if (product['details'] != null)
-                                  Text(
-                                    'Details: ${product['details']}',
-                                    style: TextStyle(fontSize: 18),
-                                  ),
-                                SizedBox(height: 10),
-                                if (product['price'] != null)
-                                  Text(
-                                    'Price: ${product['price']}',
-                                    style: TextStyle(fontSize: 18),
-                                  ),
-                              ],
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          SizedBox(width: 20),
+                          Expanded(
+                            flex: 1,
+                            child: product['imageUrl'] != null
+                                ? ClipRRect(
+                                    borderRadius: BorderRadius.circular(20.0),
+                                    child: Image.network(
+                                      product['imageUrl'],
+                                      fit: BoxFit.cover,
+                                    ),
+                                  )
+                                : Container(),
+                          ),
+                          Expanded(
+                            flex: 2,
+                            child: Container(
+                              
+                              padding: EdgeInsets.all(20),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  if (product['name'] != null)
+                                    Text(
+                                      'Name: ${product['name']}',
+                                      style: TextStyle(fontSize: 18),
+                                    ),
+                                  SizedBox(height: 10),
+                                  if (product['branding'] != null)
+                                    Text(
+                                      'Brand: ${product['branding']}',
+                                      style: TextStyle(fontSize: 18),
+                                    ),
+                                  SizedBox(height: 10),
+                                  if (product['details'] != null)
+                                    Text(
+                                      'Details: ${product['details']}',
+                                      style: TextStyle(fontSize: 18),
+                                    ),
+                                  SizedBox(height: 10),
+                                  if (product['price'] != null)
+                                    Text(
+                                      'Price: ${product['price']}',
+                                      style: TextStyle(fontSize: 18),
+                                    ),
+                                ],
+                              ),
                             ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 ),

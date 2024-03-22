@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:animate_do/animate_do.dart';
 import 'package:animations/animations.dart';
+//import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'detailspage.dart';
+
 void main() {
   runApp(MyApp());
 }
@@ -41,21 +43,33 @@ class _HomeScreenState extends State<HomeScreen> {
     },
     {
       "id": "product_2",
-      "name": "CONSTELLATION",
-      "branding": "Omega",
-      "details": "Omega Globemaster,39 mm Blue Dial 2017",
-      "price": "262000",
+      "name": "ROYAL OAK",
+      "branding": "AUDEMARS PIGUET",
+      "details":
+          "The Audemars Piguet Royal Oak Perpetual Calendar measures 41 mm in diameter and 9.5 mm thick. While it is slightly larger than its Ultra-Thin sister model, this timepiece is still very pleasant on the wrist. The manufacturer offers versions in platinum, gold, stainless steel, titanium, or ceramic.",
+      "price": "1577000",
       "imageUrl":
-          "https://tse2.mm.bing.net/th?id=OIP.qxHHUGphZB0gRVWXflWu7QHaHa&pid=Api&P=0&h=180"
+          "https://www.colognewatch.de/cdn/shop/files/AudemarsPiguet-RoyalOak-15450ST.OO.1256ST.03-Colognewatch-01-8074.png?v=1709825147&width=3351"
     },
     {
       "id": "product_3",
-      "name": "Descent Mk3i – 51 mm",
-      "branding": "Garmin",
-      "details": "Carbon Gray DLC Titanium with Black Silicone Band",
-      "price": "57990",
+      "name": "5712/1A - NAUTILUS",
+      "branding": "Patek Philippe",
+      "details":
+          "Self-winding mechanical movement. Caliber 240 PS IRM C LU. Date by hand. Moon phases. Power reserve indication. Small seconds.",
+      "price": "3549999",
       "imageUrl":
-          "https://www.garmin.com.tr/images/thumbs/0008177_descent-mk3i-51-mm-karbon-gri-dlc-titanyum-siyah-silikon-kayisli.webp"
+          "https://www.overwrist.com/wp-content/uploads/2024/01/Patek-Philippe-Nautilus-5712-1A-001.jpg"
+    },
+    {
+      "id": "product_4",
+      "name": "Overseas Chronograph 5500V/110A-B148",
+      "branding": "Vacheron Constantin",
+      "details":
+          " this beautiful Vacheron Constantin Overseas Chronograph in Stainless Steel with a Blue Dial, reference 5500V/110A-B148.",
+      "price": "1599999",
+      "imageUrl":
+          "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSJPX5uav6VjJDw436QUJyx7fXG5qgq7nLfb_7cKNUHRg&s"
     },
   ];
 
@@ -74,27 +88,27 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _navigateToDetails(int index) {
-  Navigator.push(
-    context,
-    PageRouteBuilder(
-      transitionDuration: Duration(milliseconds: 500),
-      pageBuilder: (context, animation, secondaryAnimation) => DetailsScreen(
-        product: products[index],
-        onDelete: () => _deleteProduct(index),
-        onModify: (newName, newDetails, newPrice, newBranding, newImageUrl) =>
-            _modifyProduct(index, newName, newDetails, newPrice, newBranding, newImageUrl),
+    Navigator.push(
+      context,
+      PageRouteBuilder(
+        transitionDuration: Duration(milliseconds: 500),
+        pageBuilder: (context, animation, secondaryAnimation) => DetailsScreen(
+          product: products[index],
+          onDelete: () => _deleteProduct(index),
+          onModify: (newName, newDetails, newPrice, newBranding, newImageUrl) =>
+              _modifyProduct(index, newName, newDetails, newPrice, newBranding,
+                  newImageUrl),
+        ),
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          return FadeThroughTransition(
+            animation: animation,
+            secondaryAnimation: secondaryAnimation,
+            child: child,
+          );
+        },
       ),
-      transitionsBuilder: (context, animation, secondaryAnimation, child) {
-        return FadeThroughTransition(
-          animation: animation,
-          secondaryAnimation: secondaryAnimation,
-          child: child,
-        );
-      },
-    ),
-  );
-}
-
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -111,8 +125,7 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         backgroundColor: Colors.indigo,
       ),
-  
-     body: Column(
+      body: Column(
         children: [
           Padding(
             padding: const EdgeInsets.all(8.0),
@@ -139,7 +152,6 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ],
       ),
-      
       floatingActionButton: FadeInUp(
         child: FloatingActionButton(
           onPressed: () {
@@ -147,9 +159,12 @@ class _HomeScreenState extends State<HomeScreen> {
               context: context,
               builder: (BuildContext context) {
                 TextEditingController nameController = TextEditingController();
-                TextEditingController imageUrlController = TextEditingController();
-                TextEditingController brandingController = TextEditingController();
-                TextEditingController detailsController = TextEditingController();
+                TextEditingController imageUrlController =
+                    TextEditingController();
+                TextEditingController brandingController =
+                    TextEditingController();
+                TextEditingController detailsController =
+                    TextEditingController();
                 TextEditingController priceController = TextEditingController();
 
                 return AlertDialog(
@@ -190,7 +205,6 @@ class _HomeScreenState extends State<HomeScreen> {
                       ],
                     ),
                   ),
-
                   actions: [
                     TextButton(
                       onPressed: () {
@@ -217,13 +231,15 @@ class _HomeScreenState extends State<HomeScreen> {
             );
           },
           child: Icon(Icons.add,
-              color: Color.fromARGB(255, 19, 18, 18)), // Set the icon color to white
+              color: Color.fromARGB(
+                  255, 19, 18, 18)), // Set the icon color to white
         ),
       ),
     );
   }
 
-  Widget _buildProductCard(int index, List<Map<String, dynamic>> filteredProducts) {
+  Widget _buildProductCard(
+      int index, List<Map<String, dynamic>> filteredProducts) {
     final String imageUrl = products[index]['imageUrl']!;
     final String branding = products[index]['branding']!;
 

@@ -9,7 +9,7 @@ environment:
 dependencies:
   animate_do: ^3.3.4
   animations: ^2.0.11
-  
+  flutter_native_splash: ^2.4.0
   flutter:
     sdk: flutter
   material_floating_search_bar: ^0.3.7
@@ -21,3 +21,7 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+flutter_native_splash:
+  color: "#272727"
+  #image: assets/images/Chrono.png
+  android: true
